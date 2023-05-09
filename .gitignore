@@ -1,0 +1,12 @@
+.vscode
+projects
+mainscripts/var/devmode
+mainscripts/var/alias
+mainscripts/var/asked
+mainscripts/var/vc
+mainscripts/var/peop
+mainscripts/var/zenity
+.idea
+CMakeLists.txt
+cmake-build-debug
+.vs

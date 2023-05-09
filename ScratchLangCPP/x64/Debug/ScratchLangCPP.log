@@ -1,0 +1,4 @@
+﻿  ScratchLangCPP.cpp
+C:\Users\iamwa\source\repos\ScratchLangCPP\ScratchLangCPP\src\ScratchLangCPP.cpp(213,16): warning C5056: operator '==': deprecated for array types
+C:\Users\iamwa\source\repos\ScratchLangCPP\ScratchLangCPP\include\scratchlangfunctions.h(64): warning C4715: 'filedialog': not all control paths return a value
+  ScratchLangCPP.vcxproj -> C:\Users\iamwa\source\repos\ScratchLangCPP\x64\Debug\ScratchLangCPP.exe
