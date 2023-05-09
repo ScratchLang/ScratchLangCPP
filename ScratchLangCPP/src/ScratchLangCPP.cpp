@@ -12,7 +12,6 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <ostream>
 #include <regex>
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,7 +28,6 @@ static size_t writedata(void const* ptr, size_t size, size_t nmemb, FILE* stream
 
 void startloop(const char* a1 = "", int argus = 0, char* arguv[] = {})
 {
-	filedialog("Open File", "C:\\", "All files (*.*)");
 	filesystem::path p = getexecwd();
 	string realcwd = p.parent_path().string();
 	filesystem::current_path((filesystem::path)(realcwd + "\\data"));
@@ -72,12 +70,17 @@ void startloop(const char* a1 = "", int argus = 0, char* arguv[] = {})
 		fstream f("version", ios::in);
 		getline(f, gver);
 		f.close();
-		filesystem::remove("version");
-		if (ver != gver)
-			utd = "0";
-		if (utd == "0")
+		if (gver == "")
 		{
-			if (tolower(getinput("Your version of ScratchLang (" + ver + ") is outdated. The current version is " + gver + ". Would you like to update? [Y/N]")) == 'y')
+			error("Checking version failed.");
+			Sleep(3000);
+		}
+		else
+		{
+			filesystem::remove("version");
+			if (ver != gver)
+				utd = "0";
+			if (utd == "0" && tolower(getinput("Your version of ScratchLang (" + ver + ") is outdated. The current version is " + gver + ". Would you like to update? [Y/N]")) == 'y')
 			{
 				system("git pull origin main");
 				exit(0);
@@ -157,7 +160,7 @@ void inputloop(string ia1)
 	int a1 = NULL;
 	if (ia1 != "")
 	{
-		ia1 = regex_replace(ia1, regex("-"), "");
+		ia1.erase(0, 1);
 		try
 		{
 			a1 = stoi(ia1);
@@ -206,8 +209,8 @@ void inputloop(string ia1)
 	if (inp == "1")
 	{
 		cout << "\nName your project." << endl;
-		char namechar[FILENAME_MAX];
-		cin.getline(namechar, FILENAME_MAX);
+		string namechar;
+		getline(cin, namechar);
 		string name = namechar;
 		filesystem::current_path("..");
 		if (namechar == "")
@@ -250,8 +253,8 @@ void inputloop(string ia1)
 		for (const auto& file : filesystem::directory_iterator("."))
 			cout << filesystem::canonical(file.path()) << endl;
 		cout << endl;
-		char ddrd[FILENAME_MAX];
-		cin.getline(ddrd, FILENAME_MAX);
+		string ddrd;
+		getline(cin, ddrd);
 		if (filesystem::path pgrd = ddrd; pgrd != "")
 		{
 			if (filesystem::exists(pgrd))
@@ -282,25 +285,32 @@ void inputloop(string ia1)
 		filesystem::current_path("projects");
 		cout << endl;
 		for (const auto& file : filesystem::directory_iterator("."))
-			cout << filesystem::canonical(file.path()) << endl;
+			cout << filesystem::canonical(file.path()).filename().string() << endl;
 		cout << "\nChoose a project to export, or input nothing to cancel." << endl;
-		char ddrd[FILENAME_MAX];
-		cin.getline(ddrd, FILENAME_MAX);
+		string ddrd;
+		getline(cin, ddrd);
 		if (filesystem::path pgrd = ddrd; pgrd != "")
 		{
 			if (filesystem::exists(pgrd))
 			{
+				filesystem::current_path("..\\exports");
 				miniz_cpp::zip_file ssa;
-				ssa.write(pgrd.string());
+				ssa.write(filesystem::current_path().parent_path().string() + "\\" + pgrd.string());
 				ssa.save(pgrd.string() + ".ssa");
-				filesystem::current_path("..");
-				filesystem::copy_file("projects\\" + pgrd.string() + ".ssa", "exports");
-				filesystem::remove("projects\\" + pgrd.string() + ".ssa");
 			}
 			else
-				error("Directory " + pgrd.string() + "does not exist.");
+				error("Directory " + pgrd.string() + " does not exist.");
 		}
 		exit(0);
+	}
+	else if (inp == "6")
+	{
+		string ssi = filedialog("Choose a ScratchScript Archive", (filesystem::current_path().parent_path().string() + "\\exports").c_str(), "ScratchScript Archive (*.ssa);;All Files (*.*)");
+		filesystem::current_path(((filesystem::path)ssi).parent_path());
+		filesystem::rename(ssi, "a.zip");
+		miniz_cpp::zip_file ssa;
+		ssa.extractall("a.zip");
+		filesystem::rename("a.zip", ssi);
 	}
 }
 
@@ -308,5 +318,5 @@ int main(int argc, char* argv[]) // guaranteed 1 argument, which is command used
 {
 	QApplication app(argc, argv);
 	startloop("", argc, argv);
-	return app.exec();
+	return QApplication::exec();
 }

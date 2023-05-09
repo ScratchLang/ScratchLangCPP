@@ -10,3 +10,6 @@ mainscripts/var/zenity
 CMakeLists.txt
 cmake-build-debug
 .vs
+x64
+ScratchLangCPP/x64
+ScratchLangCPP/Debug

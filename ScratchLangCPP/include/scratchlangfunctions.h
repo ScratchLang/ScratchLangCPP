@@ -43,23 +43,23 @@ char getinput(string message = "")
 	return (char)_getch();
 }
 
-void writetofile(string file, char const* toWrite)
+void writetofile(string file, char const* towrite)
 {
 	bool exists = filesystem::exists(file);
 	ofstream openfile(file, ios::app);
 	if (exists)
 	{
-		openfile << "\n" << toWrite;
+		openfile << "\n" << towrite;
 		return;
 	}
-	openfile << toWrite;
+	openfile << towrite;
 }
 
 string filedialog(const char* title, const char* start, const char* filter)
 {
-	if (QString fileName = QFileDialog::getOpenFileName(nullptr, title, start, filter); !fileName.isEmpty())
+	if (QString filename = QFileDialog::getOpenFileName(nullptr, title, start, filter); !filename.isEmpty())
 	{
-		return fileName.toLocal8Bit().constData();
+		return filename.toLocal8Bit().constData();
 	}
 }
 
