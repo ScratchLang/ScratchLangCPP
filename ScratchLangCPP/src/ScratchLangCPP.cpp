@@ -1,9 +1,8 @@
 ﻿// ScratchlangCPP.cpp : Defines the entry point for the application.
 //
 #define CURL_STATICLIB
-#include "../include/nfd.h"
-#include "../include/scratchlangfunctions.h"
-#include "../include/zip_file.hpp"
+#include <scratchlangfunctions.h>
+#include <zip_file.hpp>
 #include <algorithm>
 #include <atlstr.h>
 #include <conio.h>
