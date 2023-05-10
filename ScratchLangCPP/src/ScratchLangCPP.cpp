@@ -1,8 +1,6 @@
 ﻿// ScratchlangCPP.cpp : Defines the entry point for the application.
 //
 #define CURL_STATICLIB
-#include <scratchlangfunctions.h>
-#include <zip_file.hpp>
 #include <algorithm>
 #include <atlstr.h>
 #include <conio.h>
@@ -12,9 +10,11 @@
 #include <fstream>
 #include <iostream>
 #include <regex>
+#include <scratchlangfunctions.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
+#include <tinyfiledialogs/tinyfiledialogs.h>
 
 using namespace std;
 
@@ -51,7 +51,7 @@ void startloop(const char* a1 = "", int argus = 0, char* arguv[] = {})
 		FILE* file;
 		curl_global_init(CURL_GLOBAL_ALL);
 		curl = curl_easy_init();
-		curl_easy_setopt(curl, CURLOPT_URL, "https://raw.githubusercontent.com/ScratchLang/ScratchLang/main/version");
+		curl_easy_setopt(curl, CURLOPT_URL, "https://raw.githubusercontent.com/ScratchLang/ScratchLangCPP/master/ScratchLangCPP/data/version");
 		curl_easy_setopt(curl, CURLOPT_VERBOSE, 0L);
 		curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writedata);
@@ -293,9 +293,7 @@ void inputloop(string ia1)
 			if (filesystem::exists(pgrd))
 			{
 				filesystem::current_path("..\\exports");
-				miniz_cpp::zip_file ssa;
-				ssa.write(filesystem::current_path().parent_path().string() + "\\" + pgrd.string());
-				ssa.save(pgrd.string() + ".ssa");
+				createziparchive((filesystem::current_path().parent_path().string() + "\\" + pgrd.string()).c_str(), (pgrd.string() + ".ssa").c_str());
 			}
 			else
 				error("Directory " + pgrd.string() + " does not exist.");
@@ -304,18 +302,16 @@ void inputloop(string ia1)
 	}
 	else if (inp == "6")
 	{
-		string ssi = filedialog("Choose a ScratchScript Archive", (filesystem::current_path().parent_path().string() + "\\exports").c_str(), "ScratchScript Archive (*.ssa);;All Files (*.*)");
+		const char* filterPatterns[2] = { "*.ssa", "*.*" };
+		string ssi = tinyfd_openFileDialog("Choose a ScratchScript Archive", "..\\exports", 2, filterPatterns, NULL, 0);
 		filesystem::current_path(((filesystem::path)ssi).parent_path());
 		filesystem::rename(ssi, "a.zip");
-		miniz_cpp::zip_file ssa;
-		ssa.extractall("a.zip");
+		extract_zip_file("a.zip", ((filesystem::path)ssi).filename().replace_extension("").string().c_str());
 		filesystem::rename("a.zip", ssi);
 	}
 }
 
 int main(int argc, char* argv[]) // guaranteed 1 argument, which is command used to execute executable
 {
-	QApplication app(argc, argv);
 	startloop("", argc, argv);
-	return QApplication::exec();
 }
