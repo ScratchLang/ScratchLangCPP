@@ -1,11 +1,12 @@
-/ScratchLangCPP/data/projects/
+﻿/ScratchLangCPP/data/projects
 /ScratchLangCPP/data/mainscripts/var/devmode
 /ScratchLangCPP/data/mainscripts/var/alias
 /ScratchLangCPP/data/mainscripts/var/asked
 /ScratchLangCPP/data/mainscripts/var/vc
 /ScratchLangCPP/data/mainscripts/var/peop
 /ScratchLangCPP/data/mainscripts/var/zenity
-/.vs/
-/x64/
-/ScratchLangCPP/x64/
-/ScratchLangCPP/Debug/
+/.vs
+/x64
+/Debug
+/ScratchLangCPP/Debug
+/ScratchLangCPP/x64
