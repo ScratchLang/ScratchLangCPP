@@ -71,13 +71,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);C:\Users\iamwa\source\repos\ScratchLangCPP\ScratchLangCPP\lib;C:\Qt\6.5.0\msvc2019_64\lib</LibraryPath>
-    <ReferencePath>$(VC_ReferencesPath_x64);C:\Users\iamwa\source\repos\ScratchLangCPP\ScratchLangCPP\lib;C:\Qt\6.5.0\msvc2019_64\lib</ReferencePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(ProjectDir)lib</LibraryPath>
+    <ReferencePath>$(VC_ReferencesPath_x64);$(ProjectDir)lib</ReferencePath>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);C:\Users\iamwa\source\repos\ScratchLangCPP\ScratchLangCPP\lib;C:\Qt\6.5.0\msvc2019_64\lib</LibraryPath>
-    <ReferencePath>$(VC_ReferencesPath_x64);C:\Users\iamwa\source\repos\ScratchLangCPP\ScratchLangCPP\lib;C:\Qt\6.5.0\msvc2019_64\lib</ReferencePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(ProjectDir)lib</LibraryPath>
+    <ReferencePath>$(VC_ReferencesPath_x64);$(ProjectDir)lib</ReferencePath>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
