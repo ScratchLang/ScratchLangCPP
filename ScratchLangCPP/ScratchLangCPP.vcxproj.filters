@@ -15,46 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\curl\curlver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\curl\curl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\curl\urlapi.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\curl\easy.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\curl\header.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\curl\mprintf.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\curl\multi.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\curl\options.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\curl\stdcheaders.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\curl\system.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\curl\typecheck-gcc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\curl\websockets.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\scratchlangfunctions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\zip_file.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
@@ -68,6 +29,9 @@
     <ClCompile Include="src\ScratchLangCPP.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Decompiler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ScratchLangCPP.rc">
@@ -78,5 +42,8 @@
     <Image Include="icon.ico">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="ref\libcurl.dll" />
   </ItemGroup>
 </Project>

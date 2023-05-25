@@ -1,7 +1,7 @@
 ---
 BasedOnStyle: LLVM
 AccessModifierOffset: "-4"
-BreakBeforeBraces: Allman
+BreakBeforeBraces: Attach
 IndentWidth: "4"
 SortIncludes: CaseInsensitive
 Standard: Auto

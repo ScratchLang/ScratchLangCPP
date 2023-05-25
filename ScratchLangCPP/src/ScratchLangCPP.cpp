@@ -1,6 +1,7 @@
 ﻿// ScratchlangCPP.cpp : Defines the entry point for the application.
 //
 #define CURL_STATICLIB
+#pragma once
 #include <algorithm>
 #include <array>
 #include <atlstr.h>
@@ -19,16 +20,14 @@
 
 using namespace std;
 
-void inputloop(string ia1 = "");
+void inputloop(string, char *[], bool, string);
 
 static size_t writedata(void const *ptr, size_t size, size_t nmemb,
-                        FILE *stream)
-{
+                        FILE *stream) {
     return fwrite(ptr, size, nmemb, stream);
 }
 
-void startloop(const char *a1 = "", int argus = 0, char *arguv[] = {})
-{
+void startloop(const char *a1 = "", int argus = 0, char *arguv[] = {}) {
     filesystem::path p = getexecwd();
     string realcwd = p.parent_path().string();
     filesystem::current_path((filesystem::path)(realcwd + "\\data"));
@@ -37,15 +36,13 @@ void startloop(const char *a1 = "", int argus = 0, char *arguv[] = {})
     getline(f, ver);
     f.close();
     filesystem::current_path("mainscripts");
-    if (!filesystem::exists("var\\asked") && !filesystem::exists("var\\vc"))
-    {
+    if (!filesystem::exists("var\\asked") && !filesystem::exists("var\\vc")) {
         if (tolower(getinput("Would you like ScratchLang to check its version "
                              "every time you start it? [Y/N]")) == 'y')
             writetofile("var\\vc", "Don't remove this file please.");
         writetofile("var\\asked", "Don't remove this file please.");
     }
-    if (filesystem::exists("var\\vc") && a1 != "nope")
-    {
+    if (filesystem::exists("var\\vc") && a1 != "nope") {
         cout << "Checking version..." << endl;
         if (filesystem::exists("version"))
             filesystem::remove("version");
@@ -61,8 +58,7 @@ void startloop(const char *a1 = "", int argus = 0, char *arguv[] = {})
         curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writedata);
         file = fopen(filename, "wb");
-        if (file)
-        {
+        if (file) {
             curl_easy_setopt(curl, CURLOPT_WRITEDATA, file);
             curl_easy_perform(curl);
             fclose(file);
@@ -74,13 +70,10 @@ void startloop(const char *a1 = "", int argus = 0, char *arguv[] = {})
         fstream f("version", ios::in);
         getline(f, gver);
         f.close();
-        if (gver == "")
-        {
+        if (gver == "") {
             error("Checking version failed.");
             Sleep(3000);
-        }
-        else
-        {
+        } else {
             filesystem::remove("version");
             if (ver != gver)
                 utd = "0";
@@ -88,8 +81,7 @@ void startloop(const char *a1 = "", int argus = 0, char *arguv[] = {})
                 tolower(getinput("Your version of ScratchLang (" + ver +
                                  ") is outdated. The current version is " +
                                  gver + ". Would you like to update? [Y/N]")) ==
-                    'y')
-            {
+                    'y') {
                 system("git pull origin main");
                 exit(0);
             }
@@ -97,10 +89,8 @@ void startloop(const char *a1 = "", int argus = 0, char *arguv[] = {})
     }
     bool args = false;
     bool args2 = false;
-    if (argus > 1)
-    {
-        if (strcmp(arguv[1], "--help") == 0)
-        {
+    if (argus > 1) {
+        if (strcmp(arguv[1], "--help") == 0) {
             cout << "Usage: scratchlang.exe [OPTIONS]\n"
                  << endl
                  << "  -1                Create a project." << endl
@@ -156,110 +146,87 @@ void startloop(const char *a1 = "", int argus = 0, char *arguv[] = {})
            " "
            "                                    \\______/ \n"
         << NC << endl; // print the logo
-    if (!args || a1 == "nope")
-    {
+    if (!args || a1 == "nope") {
         cout << "Welcome to ScratchLang " << ver
              << " (Name suggested by @MagicCrayon9342 on Scratch.)" << endl;
-        inputloop();
-    }
-    else
-    {
-        if (strcmp(arguv[1], "--edit") == 0)
-        {
+        inputloop("", arguv, args2, realcwd);
+    } else {
+        if (strcmp(arguv[1], "--edit") == 0) {
             cout << "Sorry, the editor has not been implemented yet." << endl;
             exit(0);
-        }
-        else
-            inputloop(arguv[1]);
+        } else
+            inputloop(arguv[1], arguv, args2, realcwd);
     }
     filesystem::current_path("..");
-    if (filesystem::exists("projects"))
-    {
+    if (filesystem::exists("projects")) {
         filesystem::current_path("projects");
         filesystem::directory_iterator diriterate(".");
         int filecount = 0;
         for (const auto &_ : filesystem::directory_iterator("."))
             filecount++;
-        if (filecount == 0)
-        {
+        if (filecount == 0) {
             filesystem::current_path("..");
             filesystem::remove("projects");
         }
     }
 }
 
-void inputloop(string ia1)
-{
+void inputloop(string ia1, char *aac[] = {}, bool aab = false,
+               string realcwd = "") {
     string inp = "";
     int a1 = NULL;
-    if (ia1 != "")
-    {
+    if (ia1 != "") {
         ia1.erase(0, 1);
-        try
-        {
+        try {
             a1 = stoi(ia1);
-        }
-        catch (invalid_argument &)
-        {
+        } catch (invalid_argument &) {
             error(ia1 + " is not an argument.");
             Sleep(2000);
             startloop("nope");
         }
     }
-    if (a1 == NULL)
-    {
+    if (a1 == NULL) {
         cout << "1) Create a project." << endl
              << "2) Remove a project." << endl
              << "3) Compile a project." << endl
              << "4) Decompile a .sb3 file." << endl
              << "5) Export project." << endl
              << "6) Import project." << endl;
-        if (!filesystem::exists("var\\devmode"))
-        {
+        if (!filesystem::exists("var\\devmode")) {
             cout << "7) Enable Developer Mode." << endl << "8) Exit." << endl;
-        }
-        else
-        {
+        } else {
             cout << "7) Disable Developer Mode." << endl
                  << "8) Delete all variables." << endl
                  << "9) Prepare for commit and push." << endl
                  << "0) Exit." << endl;
         }
         inp = getinput();
-    }
-    else
-    {
+    } else {
         if (a1 > 0 && a1 < 7)
             inp = to_string(a1);
-        else
-        {
+        else {
             error(ia1 + " is not an argument.");
             Sleep(2000);
             startloop("nope");
         }
     }
-    if (inp == "1")
-    {
+    if (inp == "1") {
         cout << "\nName your project." << endl;
         string namechar;
         getline(cin, namechar);
         string name = namechar;
         filesystem::current_path("..");
-        if (namechar == "")
-        {
+        if (namechar == "") {
             error("Project name cannot be empty.");
             exit(0);
-        }
-        else if (filesystem::exists("projects\\" + name))
-        {
+        } else if (filesystem::exists("projects\\" + name)) {
             char yessor =
                 getinput("Project" + name + " already exists. Replace? [Y/N]");
             if (tolower(yessor) == 'y')
                 filesystem::remove_all(namechar);
             else if (tolower(yessor) == 'n')
                 exit(0);
-            else
-            {
+            else {
                 error(yessor + " is not an input.");
                 exit(0);
             }
@@ -281,12 +248,9 @@ void inputloop(string ia1)
         writetofile("projects\\" + name + "\\Sprite1\\project.ss1",
                     "// There should be no empty lines.");
         cout << "Sorry, the editor is not available as of this moment." << endl;
-    }
-    else if (inp == "2")
-    {
+    } else if (inp == "2") {
         filesystem::current_path("..");
-        if (!filesystem::exists("projects"))
-        {
+        if (!filesystem::exists("projects")) {
             error("There are no projects to delete.");
             exit(0);
         }
@@ -297,30 +261,22 @@ void inputloop(string ia1)
         cout << endl;
         string ddrd;
         getline(cin, ddrd);
-        if (filesystem::path pgrd = ddrd; pgrd != "")
-        {
+        if (filesystem::path pgrd = ddrd; pgrd != "") {
             if (filesystem::exists(pgrd))
                 filesystem::remove_all(pgrd);
             else
                 error("Directory " + pgrd.string() + "does not exist.");
         }
         exit(0);
-    }
-    else if (inp == "3")
-    {
+    } else if (inp == "3") {
         compiler();
         exit(0);
-    }
-    else if (inp == "4")
-    {
-        decompiler();
+    } else if (inp == "4") {
+        decompiler(aac, aab, realcwd);
         exit(0);
-    }
-    else if (inp == "5")
-    {
+    } else if (inp == "5") {
         filesystem::current_path("..");
-        if (!filesystem::exists("projects"))
-        {
+        if (!filesystem::exists("projects")) {
             error("There are no projects to export.");
             exit(0);
         }
@@ -333,10 +289,8 @@ void inputloop(string ia1)
              << endl;
         string ddrd;
         getline(cin, ddrd);
-        if (filesystem::path pgrd = ddrd; pgrd != "")
-        {
-            if (filesystem::exists(pgrd))
-            {
+        if (filesystem::path pgrd = ddrd; pgrd != "") {
+            if (filesystem::exists(pgrd)) {
                 filesystem::current_path("..\\projects");
                 mz_zip_archive zip_archive = {0};
                 mz_zip_writer_init_file(
@@ -348,45 +302,32 @@ void inputloop(string ia1)
                 add_to_zip(zip_archive, ".");
                 mz_zip_writer_finalize_archive(&zip_archive);
                 mz_zip_writer_end(&zip_archive);
-            }
-            else
+            } else
                 error("Directory " + pgrd.string() + " does not exist.");
         }
         exit(0);
-    }
-    else if (inp == "6")
-    {
+    } else if (inp == "6") {
         filesystem::current_path("..");
         if (!filesystem::exists("projects"))
             filesystem::create_directory("projects");
         filesystem::current_path("mainscripts");
-        const char *filterPatterns[2] = {"*.ssa", "*.*"};
+        const char *filterPatterns[1] = {"*.ssa"};
         string ssi =
             tinyfd_openFileDialog("Choose a ScratchScript Archive",
-                                  "..\\exports", 2, filterPatterns, nullptr, 0);
+                                  "..\\exports", 1, filterPatterns, nullptr, 0);
         filesystem::current_path(((filesystem::path)ssi).parent_path());
         filesystem::rename(ssi, "a.zip");
-        extract_zip("a.zip", ((filesystem::path)ssi)
-                                 .filename()
-                                 .replace_extension("")
-                                 .string()
-                                 .c_str());
+        extract_zip("a.zip", ".");
         filesystem::rename("a.zip", ssi);
-        filesystem::current_path(((filesystem::path)ssi)
-                                     .filename()
-                                     .replace_extension("")
-                                     .string()
-                                     .c_str());
         filesystem::path path;
         for (const auto &entry : filesystem::directory_iterator("."))
             path = filesystem::canonical(entry.path());
-        filesystem::copy(
-            path,
-            (filesystem::current_path().parent_path().parent_path().string() +
-             "\\projects\\" + path.filename().string())
-                .c_str(),
-            filesystem::copy_options::overwrite_existing |
-                filesystem::copy_options::recursive);
+        filesystem::copy(path,
+                         (filesystem::current_path().parent_path().string() +
+                          "\\projects\\" + path.filename().string())
+                             .c_str(),
+                         filesystem::copy_options::overwrite_existing |
+                             filesystem::copy_options::recursive);
         filesystem::current_path("..");
         filesystem::remove_all(((filesystem::path)ssi)
                                    .filename()
@@ -395,9 +336,8 @@ void inputloop(string ia1)
                                    .c_str());
         if (tolower(getinput("Remove .ssa file? [Y/N]")) == 'y')
             filesystem::remove(ssi);
-    }
-    else if (inp == "7")
-    {
+        exit(0);
+    } else if (inp == "7") {
         if (!filesystem::exists("var\\devmode"))
             writetofile(
                 "var\\devmode",
@@ -408,11 +348,8 @@ void inputloop(string ia1)
             filesystem::remove("var\\devmode");
         startloop("nope");
         exit(0);
-    }
-    else if (inp == "8")
-    {
-        if (filesystem::exists("var\\devmode"))
-        {
+    } else if (inp == "8") {
+        if (filesystem::exists("var\\devmode")) {
             for (array<string, 6> varlists{
                      {"devmode", "zenity", "ds", "asked", "vc", "pe"}};
                  const string &remove : varlists)
@@ -422,10 +359,8 @@ void inputloop(string ia1)
         }
         exit(0);
     }
-    if (filesystem::exists("var\\devmode"))
-    {
-        if (inp == "9")
-        {
+    if (filesystem::exists("var\\devmode")) {
+        if (inp == "9") {
             for (array<string, 6> varlists{
                      {"devmode", "zenity", "ds", "asked", "vc", "pe"}};
                  const string &remove : varlists)
@@ -435,26 +370,21 @@ void inputloop(string ia1)
             filesystem::current_path("..");
             if (filesystem::exists("projects"))
                 filesystem::remove_all("projects");
-            if (filesystem::exists("exports"))
-            {
+            if (filesystem::exists("exports")) {
                 filesystem::remove_all("exports");
                 filesystem::create_directory("exports");
                 writetofile("exports\\.temp", "");
             }
             exit(0);
-        }
-        else if (inp == "0")
+        } else if (inp == "0")
             exit(0);
-        else
-        {
+        else {
             error(inp + " is not an input.");
-            inputloop();
+            inputloop("", aac, aab, realcwd);
         }
-    }
-    else
-    {
+    } else {
         error(inp + " is not an input.");
-        inputloop();
+        inputloop("", aac, aab, realcwd);
     }
 }
 
