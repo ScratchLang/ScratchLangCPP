@@ -1,79 +1,145 @@
 ﻿// ScratchlangCPP.cpp : Defines the entry point for the application.
 //
-#define CURL_STATICLIB
-#pragma once
 #include <algorithm>
 #include <array>
-#include <atlstr.h>
-#include <conio.h>
+#include <cstdio>
 #include <cstring>
-#include <curl/curl.h>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <memory>
 #include <regex>
 #include <scratchlangfunctions.h>
+#include <stdexcept>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
+#ifdef _WIN32
+#define CURL_STATICLIB
+#include <atlstr.h>
+#include <conio.h>
+#include <curlpp/cURLpp.hpp>
+#include <curlpp/Easy.hpp>
+#include <curlpp/Exception.hpp>
+#include <curlpp/Options.hpp>
 #include <tinyfiledialogs/tinyfiledialogs.h>
+#endif
+#ifdef linux
+#include <unistd.h>
+#endif
 
 using namespace std;
 
-void inputloop(string, char *[], bool, string);
+void inputloop(string, char *[], bool, string const &);
 
 static size_t writedata(void const *ptr, size_t size, size_t nmemb,
                         FILE *stream) {
     return fwrite(ptr, size, nmemb, stream);
 }
 
+class WriterMemoryClass {
+public:
+    // Helper Class for reading result from remote host
+    WriterMemoryClass() {
+        this->m_pBuffer = nullptr;
+        this->m_pBuffer = (char *)malloc(20000 * sizeof(char));
+        this->m_Size = 0;
+    };
+
+    ~WriterMemoryClass() {
+        if (this->m_pBuffer)
+            free(this->m_pBuffer);
+    };
+
+    void *Realloc(void *ptr, size_t size) {
+        if (ptr)
+            return realloc(ptr, size);
+        else
+            return malloc(size);
+    };
+
+    // Callback must be declared static, otherwise it won't link...
+    size_t WriteMemoryCallback(char const *ptr, size_t size, size_t nmemb) {
+        // Calculate the real size of the incoming buffer
+        size_t realsize = size * nmemb;
+
+        // (Re)Allocate memory for the buffer
+        m_pBuffer = (char *)Realloc(m_pBuffer, m_Size + realsize);
+
+        // Test if Buffer is initialized correctly & copy memory
+        if (m_pBuffer == nullptr) {
+            realsize = 0;
+        }
+
+        memcpy(&(m_pBuffer[m_Size]), ptr, realsize);
+        m_Size += realsize;
+
+        // return the real size of the buffer...
+        return realsize;
+    };
+
+    void print() const {
+        cout << "Size: " << m_Size << endl;
+        cout << "Content: " << endl << m_pBuffer << endl;
+    }
+
+    // Public member vars
+    char *m_pBuffer;
+    size_t m_Size;
+};
+
 void startloop(const char *a1 = "", int argus = 0, char *arguv[] = {}) {
     filesystem::path p = getexecwd();
     string realcwd = p.parent_path().string();
-    filesystem::current_path((filesystem::path)(realcwd + "\\data"));
+    filesystem::current_path((filesystem::path)(realcwd + "/data"));
     fstream f("version", ios::in);
     string ver;
     getline(f, ver);
     f.close();
     filesystem::current_path("mainscripts");
-    if (!filesystem::exists("var\\asked") && !filesystem::exists("var\\vc")) {
+    if (!filesystem::exists("var/asked") && !filesystem::exists("var/vc")) {
         if (tolower(getinput("Would you like ScratchLang to check its version "
                              "every time you start it? [Y/N]")) == 'y')
-            writetofile("var\\vc", "Don't remove this file please.");
-        writetofile("var\\asked", "Don't remove this file please.");
+            writetofile("var/vc", "Don't remove this file please.");
+        writetofile("var/asked", "Don't remove this file please.");
     }
-    if (filesystem::exists("var\\vc") && a1 != "nope") {
+    if (filesystem::exists("var/vc") && a1 != "nope") {
         cout << "Checking version..." << endl;
         if (filesystem::exists("version"))
             filesystem::remove("version");
-        CURL *curl;
-        static const char *filename = "version";
-        FILE *file;
-        curl_global_init(CURL_GLOBAL_ALL);
-        curl = curl_easy_init();
-        curl_easy_setopt(curl, CURLOPT_URL,
-                         "https://raw.githubusercontent.com/ScratchLang/"
-                         "ScratchLangCPP/master/ScratchLangCPP/data/version");
-        curl_easy_setopt(curl, CURLOPT_VERBOSE, 0L);
-        curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writedata);
-        file = fopen(filename, "wb");
-        if (file) {
-            curl_easy_setopt(curl, CURLOPT_WRITEDATA, file);
-            curl_easy_perform(curl);
-            fclose(file);
-        }
-        curl_easy_cleanup(curl);
-        curl_global_cleanup();
-        string utd = "1";
-        string gver;
-        fstream f("version", ios::in);
-        getline(f, gver);
-        f.close();
-        if (gver == "") {
-            error("Checking version failed.");
-            Sleep(3000);
-        } else {
+#ifdef _WIN32
+        curlpp::Cleanup clean;
+        curlpp::Easy request;
+        WriterMemoryClass mWriterChunk;
+        curlpp::types::WriteFunctionFunctor wfunctor =
+            bind(&WriterMemoryClass::WriteMemoryCallback, &mWriterChunk,
+                 placeholders::_1, placeholders::_2, placeholders::_3);
+        request.setOpt<curlpp::options::Url>(
+            "https://raw.githubusercontent.com/ScratchLang/ScratchLangCPP/"
+            "master/ScratchLangCPP/data/version");
+        request.setOpt<curlpp::options::Verbose>(false);
+        request.setOpt<curlpp::options::NoProgress>(true);
+        request.setOpt<curlpp::options::WriteFunction>(wfunctor);
+#endif
+#ifdef linux
+        system("wget -q "
+               "https://raw.githubusercontent.com/ScratchLang/ScratchLangCPP/"
+               "master/ScratchLangCPP/data/version");
+#endif
+        try {
+#ifdef _WIN32
+            FILE *file = fopen("version", "wb");
+            if (file) {
+                request.setOpt<curlpp::options::WriteFile>(file);
+                request.perform();
+                fclose(file);
+            }
+#endif
+            string utd = "1";
+            string gver;
+            f = fstream("version", ios::in);
+            getline(f, gver);
+            f.close();
             filesystem::remove("version");
             if (ver != gver)
                 utd = "0";
@@ -85,12 +151,15 @@ void startloop(const char *a1 = "", int argus = 0, char *arguv[] = {}) {
                 system("git pull origin main");
                 exit(0);
             }
+        } catch (...) {
+            error("Checking version failed.");
         }
     }
     bool args = false;
     bool args2 = false;
     if (argus > 1) {
         if (strcmp(arguv[1], "--help") == 0) {
+#ifdef _WIN32
             cout << "Usage: scratchlang.exe [OPTIONS]\n"
                  << endl
                  << "  -1                Create a project." << endl
@@ -109,13 +178,39 @@ void startloop(const char *a1 = "", int argus = 0, char *arguv[] = {}) {
                  << "Examples:" << endl
                  << "  .\\scratchlang.exe -4 C:\\Users\\Me\\project.sb3"
                  << endl;
+#endif
+#ifdef linux
+            cout << "Usage: scratchlang.exe [OPTIONS]\n"
+                 << endl
+                 << "  -1                Create a project." << endl
+                 << "  -2                Remove a project." << endl
+                 << "  -3                Compile a project." << endl
+                 << "  -4                Decompile a project." << endl
+                 << "  -5                Export a project." << endl
+                 << "  -6                Import a project." << endl
+                 << "  --debug [FILE]    Debug a ScratchScript file. Currently "
+                    "not "
+                    "available."
+                 << endl
+                 << "  --help            Display this help message." << endl
+                 << "  --edit            Edit a ScratchLang project.\n"
+                 << endl
+                 << "Examples:" << endl
+                 << "  .\\scratchlang.exe -4 C:\\Users\\Me\\project.sb3"
+                 << endl;
+#endif
             exit(0);
         }
         args = true;
         if (argus > 2)
             args2 = true;
     }
+#ifdef _WIN32
     system("cls");
+#endif
+#ifdef linux
+    system("clear");
+#endif
     cout
         << P
         << "\n      /$$$$$$                                 /$$               "
@@ -172,7 +267,7 @@ void startloop(const char *a1 = "", int argus = 0, char *arguv[] = {}) {
 }
 
 void inputloop(string ia1, char *aac[] = {}, bool aab = false,
-               string realcwd = "") {
+               string const &realcwd = "") {
     string inp = "";
     int a1 = NULL;
     if (ia1 != "") {
@@ -181,7 +276,7 @@ void inputloop(string ia1, char *aac[] = {}, bool aab = false,
             a1 = stoi(ia1);
         } catch (invalid_argument &) {
             error(ia1 + " is not an argument.");
-            Sleep(2000);
+            sleep(2000);
             startloop("nope");
         }
     }
@@ -192,7 +287,7 @@ void inputloop(string ia1, char *aac[] = {}, bool aab = false,
              << "4) Decompile a .sb3 file." << endl
              << "5) Export project." << endl
              << "6) Import project." << endl;
-        if (!filesystem::exists("var\\devmode")) {
+        if (!filesystem::exists("var/devmode")) {
             cout << "7) Enable Developer Mode." << endl << "8) Exit." << endl;
         } else {
             cout << "7) Disable Developer Mode." << endl
@@ -206,7 +301,7 @@ void inputloop(string ia1, char *aac[] = {}, bool aab = false,
             inp = to_string(a1);
         else {
             error(ia1 + " is not an argument.");
-            Sleep(2000);
+            sleep(2000);
             startloop("nope");
         }
     }
@@ -219,7 +314,7 @@ void inputloop(string ia1, char *aac[] = {}, bool aab = false,
         if (namechar == "") {
             error("Project name cannot be empty.");
             exit(0);
-        } else if (filesystem::exists("projects\\" + name)) {
+        } else if (filesystem::exists("projects/" + name)) {
             char yessor =
                 getinput("Project" + name + " already exists. Replace? [Y/N]");
             if (tolower(yessor) == 'y')
@@ -234,18 +329,17 @@ void inputloop(string ia1, char *aac[] = {}, bool aab = false,
         cout << "You named your project " + name +
                     ". If you want to rename it, use the File Explorer."
              << endl;
-        filesystem::create_directories("projects\\" + name + "\\Stage\\assets");
-        filesystem::copy("resources\\cd21514d0531fdffb22204e0ec5ed84a.svg",
-                         "projects\\" + name + "\\Stage\\assets",
+        filesystem::create_directories("projects/" + name + "/Stage/assets");
+        filesystem::copy("resources/cd21514d0531fdffb22204e0ec5ed84a.svg",
+                         "projects/" + name + "/Stage/assets",
                          filesystem::copy_options::overwrite_existing);
-        writetofile("projects\\" + name + "\\Stage\\project.ss1",
+        writetofile("projects/" + name + "/Stage/project.ss1",
                     "// There should be no empty lines.");
-        filesystem::create_directories("projects\\" + name +
-                                       "\\Sprite1\\assets");
-        filesystem::copy("resources\\341ff8639e74404142c11ad52929b021.svg",
-                         "projects\\" + name + "\\Sprite1\\assets",
+        filesystem::create_directories("projects/" + name + "/Sprite1/assets");
+        filesystem::copy("resources/341ff8639e74404142c11ad52929b021.svg",
+                         "projects/" + name + "/Sprite1/assets",
                          filesystem::copy_options::overwrite_existing);
-        writetofile("projects\\" + name + "\\Sprite1\\project.ss1",
+        writetofile("projects/" + name + "/Sprite1/project.ss1",
                     "// There should be no empty lines.");
         cout << "Sorry, the editor is not available as of this moment." << endl;
     } else if (inp == "2") {
@@ -261,7 +355,8 @@ void inputloop(string ia1, char *aac[] = {}, bool aab = false,
         cout << endl;
         string ddrd;
         getline(cin, ddrd);
-        if (filesystem::path pgrd = ddrd; pgrd != "") {
+        filesystem::path pgrd = ddrd;
+        if (pgrd != "") {
             if (filesystem::exists(pgrd))
                 filesystem::remove_all(pgrd);
             else
@@ -289,19 +384,28 @@ void inputloop(string ia1, char *aac[] = {}, bool aab = false,
              << endl;
         string ddrd;
         getline(cin, ddrd);
-        if (filesystem::path pgrd = ddrd; pgrd != "") {
+        filesystem::path pgrd = ddrd;
+        if (pgrd != "") {
             if (filesystem::exists(pgrd)) {
-                filesystem::current_path("..\\projects");
+                filesystem::current_path("../projects");
+#ifdef _WIN32
                 mz_zip_archive zip_archive = {0};
                 mz_zip_writer_init_file(
                     &zip_archive,
                     (filesystem::current_path().parent_path().string() +
-                     "\\exports\\" + pgrd.string() + ".ssa")
+                     "/exports/" + pgrd.string() + ".ssa")
                         .c_str(),
                     0);
                 add_to_zip(zip_archive, ".");
                 mz_zip_writer_finalize_archive(&zip_archive);
                 mz_zip_writer_end(&zip_archive);
+#endif
+#ifdef linux
+                system(("tar -cf " +
+                        filesystem::current_path().parent_path().string() +
+                        "/exports/" + pgrd.string() + ".ssa " + pgrd.string())
+                           .c_str());
+#endif
             } else
                 error("Directory " + pgrd.string() + " does not exist.");
         }
@@ -312,10 +416,20 @@ void inputloop(string ia1, char *aac[] = {}, bool aab = false,
             filesystem::create_directory("projects");
         filesystem::current_path("mainscripts");
         const char *filterPatterns[1] = {"*.ssa"};
-        string ssi =
+        string ssi;
+#ifdef _WIN32
+        ssi =
             tinyfd_openFileDialog("Choose a ScratchScript Archive",
-                                  "..\\exports", 1, filterPatterns, nullptr, 0);
+                                  "../exports", 1, filterPatterns, nullptr, 0);
+#endif
+#ifdef linux
+        ssi =
+            exec("zenity --file-selection --file-filter 'ScratchScript Archive "
+                 "(*.ssa) | *.ssa' --file-filter 'All Files (*.*) | *.*' "
+                 "--title='Choose a ScratchScript Archive'");
+#endif
         filesystem::current_path(((filesystem::path)ssi).parent_path());
+#ifdef _WIN32
         filesystem::rename(ssi, "a.zip");
         extract_zip("a.zip", ".");
         filesystem::rename("a.zip", ssi);
@@ -324,7 +438,7 @@ void inputloop(string ia1, char *aac[] = {}, bool aab = false,
             path = filesystem::canonical(entry.path());
         filesystem::copy(path,
                          (filesystem::current_path().parent_path().string() +
-                          "\\projects\\" + path.filename().string())
+                          "/projects/" + path.filename().string())
                              .c_str(),
                          filesystem::copy_options::overwrite_existing |
                              filesystem::copy_options::recursive);
@@ -334,46 +448,57 @@ void inputloop(string ia1, char *aac[] = {}, bool aab = false,
                                    .replace_extension("")
                                    .string()
                                    .c_str());
+#endif
+#ifdef linux
+        system(("tar -xf " + ssi).c_str());
+        system(
+            ("cp -rf " +
+             ((filesystem::path)ssi).filename().replace_extension("").string() +
+             " ../projects")
+                .c_str());
+        filesystem::remove_all(
+            ((filesystem::path)ssi).filename().replace_extension(""));
+#endif
         if (tolower(getinput("Remove .ssa file? [Y/N]")) == 'y')
             filesystem::remove(ssi);
         exit(0);
     } else if (inp == "7") {
-        if (!filesystem::exists("var\\devmode"))
+        if (!filesystem::exists("var/devmode"))
             writetofile(
-                "var\\devmode",
+                "var/devmode",
                 "This is a devmode file. You can manually remove this file "
                 "to disable dev mode if you don't want to use the program to "
                 "disable it for some reason.");
         else
-            filesystem::remove("var\\devmode");
+            filesystem::remove("var/devmode");
         startloop("nope");
         exit(0);
     } else if (inp == "8") {
-        if (filesystem::exists("var\\devmode")) {
-            for (array<string, 6> varlists{
-                     {"devmode", "zenity", "ds", "asked", "vc", "pe"}};
-                 const string &remove : varlists)
-                if (filesystem::exists("var\\" + remove))
-                    filesystem::remove("var\\" + remove);
-            writetofile("var\\ds", "I forgor why this file exists");
+        if (filesystem::exists("var/devmode")) {
+            array<string, 6> varlists{
+                {"devmode", "zenity", "ds", "asked", "vc", "pe"}};
+            for (const string &remove : varlists)
+                if (filesystem::exists("var/" + remove))
+                    filesystem::remove("var/" + remove);
+            writetofile("var/ds", "I forgor why this file exists");
         }
         exit(0);
     }
-    if (filesystem::exists("var\\devmode")) {
+    if (filesystem::exists("var/devmode")) {
         if (inp == "9") {
-            for (array<string, 6> varlists{
-                     {"devmode", "zenity", "ds", "asked", "vc", "pe"}};
-                 const string &remove : varlists)
-                if (filesystem::exists("var\\" + remove))
-                    filesystem::remove("var\\" + remove);
-            writetofile("var\\ds", "I forgor why this file exists");
+            array<string, 6> varlists{
+                {"devmode", "zenity", "ds", "asked", "vc", "pe"}};
+            for (const string &remove : varlists)
+                if (filesystem::exists("var/" + remove))
+                    filesystem::remove("var/" + remove);
+            writetofile("var/ds", "I forgor why this file exists");
             filesystem::current_path("..");
             if (filesystem::exists("projects"))
                 filesystem::remove_all("projects");
             if (filesystem::exists("exports")) {
                 filesystem::remove_all("exports");
                 filesystem::create_directory("exports");
-                writetofile("exports\\.temp", "");
+                writetofile("exports/.temp", "");
             }
             exit(0);
         } else if (inp == "0")
@@ -391,5 +516,19 @@ void inputloop(string ia1, char *aac[] = {}, bool aab = false,
 int main(int argc, char *argv[]) // guaranteed 1 argument, which is command used
                                  // to execute executable
 {
+#ifdef linux
+    string dependencies[2] = {"zenity", "unzip"};
+    for (const string &dep : dependencies) {
+        if (exec(("command -v " + dep).c_str()) == "") {
+            cout << dep +
+                        ", a necessary dependency, is not installed! Please "
+                        "use "
+                        "\"sudo apt install " +
+                        dep + "\" to install it !"
+                 << endl;
+            exit(0);
+        }
+    }
+#endif
     startloop("", argc, argv);
 }

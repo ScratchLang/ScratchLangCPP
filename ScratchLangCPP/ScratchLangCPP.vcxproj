@@ -119,7 +119,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);libcurl.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -152,16 +152,18 @@
     <ClCompile Include="src\ScratchLangCPP.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="ScratchLangCPP.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="icon.ico" />
     <ClCompile Include="src\Decompiler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="ref\libcurl.dll">
       <FileType>Document</FileType>
     </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ScratchLangCPP.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
