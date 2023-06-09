@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{dfdf24db-cad0-4d93-9285-f410fd5624bd}</ItemsProjectGuid>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)compiler.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)decompiler.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)scratchlangfunctions.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\anchor.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\binary.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\contrib\anchordict.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\contrib\graphbuilder.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\depthguard.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\dll.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\emitfromevents.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\emitter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\emitterdef.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\emittermanip.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\emitterstyle.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\eventhandler.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\exceptions.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\mark.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\node\convert.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\node\detail\impl.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\node\detail\iterator.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\node\detail\iterator_fwd.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\node\detail\memory.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\node\detail\node.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\node\detail\node_data.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\node\detail\node_iterator.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\node\detail\node_ref.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\node\emit.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\node\impl.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\node\iterator.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\node\node.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\node\parse.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\node\ptr.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\node\type.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\noexcept.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\null.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\ostream_wrapper.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\parser.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\stlemitter.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\traits.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\yaml.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Compiler.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Decompiler.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ScratchLangCPP.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="$(MSBuildThisFileDirectory)icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="$(MSBuildThisFileDirectory)libyaml-cpp.a" />
+    <Library Include="$(MSBuildThisFileDirectory)yaml-cppd.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="$(MSBuildThisFileDirectory)yaml-cppd.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)testing.json" />
+  </ItemGroup>
+</Project>

@@ -47,6 +47,16 @@ ss3 Python or javascript?
 
 **ss2 and ss1 won't be worked on anytime soon.**
 
+## Building
+
+There are a couple of vcpkg packages you need before you can compile the Windows binary. These are not needed if you only want to compile for Linux systems.
+`curlpp::x64-windows`, `dirent:x64-windows`, `tinyfiledialogs:x64-windows`, `miniz:x64-windows`
+You can change `x64-windows` to something else if you need to but I don't know if it'll still work, as I've only used the `x64-windows` versions of those packages.
+
+Once you have those packages installed for the solution, just open it in Visual Studio and build.
+
+Also, if you're trying to compile for Linux systems on Windows, WSL2 and a C++ compiler is needed (like g++).
+
 ## How to use
 
 Binaries coming to the releases soon. For now you'll have to compile the source in order to run.
@@ -145,7 +155,7 @@ Program everything
 
 ### wendiner
 
-I don't know what they're doing, I think they quit
+I don't know what they're doing but I know they're doing something
 
 ### redstone-scratch
 

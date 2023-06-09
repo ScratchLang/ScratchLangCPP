@@ -3,20 +3,60 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScratchLangSharedFiles", "ScratchLangSharedFiles\ScratchLangSharedFiles.vcxitems", "{DFDF24DB-CAD0-4D93-9285-F410FD5624BD}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScratchLangLinux", "ScratchLangLinux\ScratchLangLinux.vcxproj", "{5D5D183F-9D39-4890-B8C9-6C52172FF495}"
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScratchLangCPP", "ScratchLangCPP\ScratchLangCPP.vcxproj", "{BC322181-4EE6-49AE-A787-6B8902AB9928}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|ARM = Debug|ARM
+		Debug|ARM64 = Debug|ARM64
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		Release|ARM = Release|ARM
+		Release|ARM64 = Release|ARM64
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5D5D183F-9D39-4890-B8C9-6C52172FF495}.Debug|ARM.ActiveCfg = Debug|ARM
+		{5D5D183F-9D39-4890-B8C9-6C52172FF495}.Debug|ARM.Build.0 = Debug|ARM
+		{5D5D183F-9D39-4890-B8C9-6C52172FF495}.Debug|ARM.Deploy.0 = Debug|ARM
+		{5D5D183F-9D39-4890-B8C9-6C52172FF495}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{5D5D183F-9D39-4890-B8C9-6C52172FF495}.Debug|ARM64.Build.0 = Debug|ARM64
+		{5D5D183F-9D39-4890-B8C9-6C52172FF495}.Debug|ARM64.Deploy.0 = Debug|ARM64
+		{5D5D183F-9D39-4890-B8C9-6C52172FF495}.Debug|x64.ActiveCfg = Debug|x64
+		{5D5D183F-9D39-4890-B8C9-6C52172FF495}.Debug|x64.Build.0 = Debug|x64
+		{5D5D183F-9D39-4890-B8C9-6C52172FF495}.Debug|x64.Deploy.0 = Debug|x64
+		{5D5D183F-9D39-4890-B8C9-6C52172FF495}.Debug|x86.ActiveCfg = Debug|x86
+		{5D5D183F-9D39-4890-B8C9-6C52172FF495}.Debug|x86.Build.0 = Debug|x86
+		{5D5D183F-9D39-4890-B8C9-6C52172FF495}.Debug|x86.Deploy.0 = Debug|x86
+		{5D5D183F-9D39-4890-B8C9-6C52172FF495}.Release|ARM.ActiveCfg = Release|ARM
+		{5D5D183F-9D39-4890-B8C9-6C52172FF495}.Release|ARM.Build.0 = Release|ARM
+		{5D5D183F-9D39-4890-B8C9-6C52172FF495}.Release|ARM.Deploy.0 = Release|ARM
+		{5D5D183F-9D39-4890-B8C9-6C52172FF495}.Release|ARM64.ActiveCfg = Release|ARM64
+		{5D5D183F-9D39-4890-B8C9-6C52172FF495}.Release|ARM64.Build.0 = Release|ARM64
+		{5D5D183F-9D39-4890-B8C9-6C52172FF495}.Release|ARM64.Deploy.0 = Release|ARM64
+		{5D5D183F-9D39-4890-B8C9-6C52172FF495}.Release|x64.ActiveCfg = Release|x64
+		{5D5D183F-9D39-4890-B8C9-6C52172FF495}.Release|x64.Build.0 = Release|x64
+		{5D5D183F-9D39-4890-B8C9-6C52172FF495}.Release|x64.Deploy.0 = Release|x64
+		{5D5D183F-9D39-4890-B8C9-6C52172FF495}.Release|x86.ActiveCfg = Release|x86
+		{5D5D183F-9D39-4890-B8C9-6C52172FF495}.Release|x86.Build.0 = Release|x86
+		{5D5D183F-9D39-4890-B8C9-6C52172FF495}.Release|x86.Deploy.0 = Release|x86
+		{BC322181-4EE6-49AE-A787-6B8902AB9928}.Debug|ARM.ActiveCfg = Debug|x64
+		{BC322181-4EE6-49AE-A787-6B8902AB9928}.Debug|ARM.Build.0 = Debug|x64
+		{BC322181-4EE6-49AE-A787-6B8902AB9928}.Debug|ARM64.ActiveCfg = Debug|x64
+		{BC322181-4EE6-49AE-A787-6B8902AB9928}.Debug|ARM64.Build.0 = Debug|x64
 		{BC322181-4EE6-49AE-A787-6B8902AB9928}.Debug|x64.ActiveCfg = Debug|x64
 		{BC322181-4EE6-49AE-A787-6B8902AB9928}.Debug|x64.Build.0 = Debug|x64
 		{BC322181-4EE6-49AE-A787-6B8902AB9928}.Debug|x86.ActiveCfg = Debug|Win32
 		{BC322181-4EE6-49AE-A787-6B8902AB9928}.Debug|x86.Build.0 = Debug|Win32
+		{BC322181-4EE6-49AE-A787-6B8902AB9928}.Release|ARM.ActiveCfg = Release|x64
+		{BC322181-4EE6-49AE-A787-6B8902AB9928}.Release|ARM.Build.0 = Release|x64
+		{BC322181-4EE6-49AE-A787-6B8902AB9928}.Release|ARM64.ActiveCfg = Release|x64
+		{BC322181-4EE6-49AE-A787-6B8902AB9928}.Release|ARM64.Build.0 = Release|x64
 		{BC322181-4EE6-49AE-A787-6B8902AB9928}.Release|x64.ActiveCfg = Release|x64
 		{BC322181-4EE6-49AE-A787-6B8902AB9928}.Release|x64.Build.0 = Release|x64
 		{BC322181-4EE6-49AE-A787-6B8902AB9928}.Release|x86.ActiveCfg = Release|Win32
@@ -27,5 +67,10 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B8C019E7-A516-4DDC-A67C-545F975015F5}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		ScratchLangSharedFiles\ScratchLangSharedFiles.vcxitems*{5d5d183f-9d39-4890-b8c9-6c52172ff495}*SharedItemsImports = 4
+		ScratchLangSharedFiles\ScratchLangSharedFiles.vcxitems*{bc322181-4ee6-49ae-a787-6b8902ab9928}*SharedItemsImports = 4
+		ScratchLangSharedFiles\ScratchLangSharedFiles.vcxitems*{dfdf24db-cad0-4d93-9285-f410fd5624bd}*SharedItemsImports = 9
 	EndGlobalSection
 EndGlobal
