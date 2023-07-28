@@ -65,9 +65,9 @@ void compiler(char *argv[]) {
         }
 #else
         fold = exec("zenity --file-selection --directory");
+        fold.erase(remove(fold.begin(), fold.end(), '\n'), fold.cend());
 #endif
     }
-    fold.erase(remove(fold.begin(), fold.end(), '\n'), fold.cend());
     if (fold != "") {
         filesystem::current_path(fold);
         if (!filesystem::exists(".maindir")) {

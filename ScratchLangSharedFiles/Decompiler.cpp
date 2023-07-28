@@ -3,6 +3,7 @@
 #include <decompiler.h>
 #include <filesystem>
 #include <fstream>
+#include <input.h>
 #include <iostream>
 #include <regex>
 #include <scratchlangfunctions.h>
@@ -84,8 +85,8 @@ void decompiler(char *argv[], bool args2, string const &realcwd) {
         filesystem::create_directory("projects");
     filesystem::current_path("projects");
     if (filesystem::exists(name)) {
-        if (tolower(getinput("Project " + name +
-                             " already exists. Replace? [Y/N]")) == 'y')
+        if (tolower(cgetch("Project " + name +
+                           " already exists. Replace? [Y/N]")) == 'y')
             filesystem::remove_all(name);
         else
             exit(0);
@@ -198,6 +199,13 @@ void decompiler(char *argv[], bool args2, string const &realcwd) {
             nq(18);
             word = extractdata();
             writeblock("switch backdrop to (\"" + word + "\")");
+        } else if (a1 == "looks_switchbackdroptoandwait") {
+            nq(5);
+            word = extractdata();
+            findblock(word);
+            nq(18);
+            word = extractdata();
+            writeblock("switch backdrop to (\"" + word + "\") and wait");
         } else {
             cout << RED + "Unknown block: \"" + a1 + "\" Skipping." + NC
                  << endl;

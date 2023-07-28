@@ -16,6 +16,38 @@
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)compiler.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)decompiler.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)editor.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)gainput\gainput.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)gainput\GainputAllocator.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)gainput\GainputContainers.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)gainput\GainputDebugRenderer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)gainput\GainputHelpers.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)gainput\GainputInputDeltaState.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)gainput\GainputInputDevice.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)gainput\GainputInputDeviceBuiltIn.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)gainput\GainputInputDeviceKeyboard.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)gainput\GainputInputDeviceMouse.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)gainput\GainputInputDevicePad.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)gainput\GainputInputDeviceTouch.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)gainput\GainputInputListener.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)gainput\GainputInputManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)gainput\GainputInputMap.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)gainput\GainputInputState.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)gainput\GainputIos.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)gainput\GainputLog.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)gainput\GainputMapFilters.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)gainput\gestures\GainputButtonStickGesture.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)gainput\gestures\GainputDoubleClickGesture.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)gainput\gestures\GainputGestures.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)gainput\gestures\GainputHoldGesture.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)gainput\gestures\GainputPinchGesture.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)gainput\gestures\GainputRotateGesture.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)gainput\gestures\GainputSimultaneouslyDownGesture.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)gainput\gestures\GainputTapGesture.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)gainput\recorder\GainputInputPlayer.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)gainput\recorder\GainputInputRecorder.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)gainput\recorder\GainputInputRecording.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)input.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)scratchlangfunctions.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\anchor.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)yaml-cpp\binary.h" />
@@ -58,17 +90,38 @@
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Compiler.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Decompiler.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Editor.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Input.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ScratchLangCPP.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="$(MSBuildThisFileDirectory)icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="$(MSBuildThisFileDirectory)libyaml-cpp.a" />
-    <Library Include="$(MSBuildThisFileDirectory)yaml-cppd.lib" />
+    <Library Include="$(MSBuildThisFileDirectory)yaml-cppd.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x86'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </Library>
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="$(MSBuildThisFileDirectory)yaml-cppd.dll" />
+    <CopyFileToFolders Include="$(MSBuildThisFileDirectory)yaml-cppd.dll">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x86'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)testing.json" />

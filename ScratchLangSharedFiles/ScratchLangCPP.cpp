@@ -6,6 +6,7 @@
 #include <cstring>
 #include <filesystem>
 #include <fstream>
+#include <input.h>
 #include <iostream>
 #include <memory>
 #include <regex>
@@ -24,8 +25,7 @@
 #include <curlpp/Options.hpp>
 #include <wininet.h>
 #pragma comment(lib, "Wininet.lib")
-#endif
-#ifdef linux
+#else linux
 #include <unistd.h>
 #endif
 
@@ -109,8 +109,8 @@ void startloop(const char *a1 = "", int argus = 0, char *arguv[] = {}) {
     f.close();
     filesystem::current_path("mainscripts");
     if (!filesystem::exists("var/asked") && !filesystem::exists("var/vc")) {
-        if (tolower(getinput("Would you like ScratchLang to check its version "
-                             "every time you start it? [Y/N]")) == 'y')
+        if (tolower(cgetch("Would you like ScratchLang to check its version "
+                           "every time you start it? [Y/N]")) == 'y')
             writetofile("var/vc", "Don't remove this file please.");
         writetofile("var/asked", "Don't remove this file please.");
     }
@@ -170,10 +170,9 @@ void startloop(const char *a1 = "", int argus = 0, char *arguv[] = {}) {
             if (ver != gver)
                 utd = "0";
             if (utd == "0" &&
-                tolower(getinput("Your version of ScratchLang (" + ver +
-                                 ") is outdated. The current version is " +
-                                 gver + ". Would you like to update? [Y/N]")) ==
-                    'y') {
+                tolower(cgetch("Your version of ScratchLang (" + ver +
+                               ") is outdated. The current version is " + gver +
+                               ". Would you like to update? [Y/N]")) == 'y') {
                 system("git pull origin main");
                 exit(0);
             }
@@ -268,7 +267,7 @@ void startloop(const char *a1 = "", int argus = 0, char *arguv[] = {}) {
         inputloop("", arguv, args2, realcwd);
     } else {
         if (strcmp(arguv[1], "--edit") == 0) {
-            cout << "Sorry, the editor has not been implemented yet." << endl;
+            editor();
             exit(0);
         } else
             inputloop(arguv[1], arguv, args2, realcwd);
@@ -316,7 +315,7 @@ void inputloop(string ia1, char *aac[] = {}, bool aab = false,
                  << "9) Prepare for commit and push." << endl
                  << "0) Exit." << endl;
         }
-        inp = getinput();
+        inp = cgetch();
     } else {
         if (a1 > 0 && a1 < 7)
             inp = to_string(a1);
@@ -337,7 +336,7 @@ void inputloop(string ia1, char *aac[] = {}, bool aab = false,
             exit(0);
         } else if (filesystem::exists("projects/" + name)) {
             char yessor =
-                getinput("Project" + name + " already exists. Replace? [Y/N]");
+                cgetch("Project" + name + " already exists. Replace? [Y/N]");
             if (tolower(yessor) == 'y')
                 filesystem::remove_all(namechar);
             else if (tolower(yessor) == 'n')
@@ -476,7 +475,7 @@ void inputloop(string ia1, char *aac[] = {}, bool aab = false,
         filesystem::remove_all(
             ((filesystem::path)ssi).filename().replace_extension(""));
 #endif
-        if (tolower(getinput("Remove .ssa file? [Y/N]")) == 'y')
+        if (tolower(cgetch("Remove .ssa file? [Y/N]")) == 'y')
             filesystem::remove(ssi);
         exit(0);
     } else if (inp == "7") {
@@ -536,7 +535,7 @@ int main(int argc, char *argv[]) // guaranteed 1 argument, which is command used
 #ifdef _WIN32
     // linux check
 #else
-    string dependencies[3] = {"zenity", "unzip", "git"};
+    const char *dependencies[] = {"zenity", "unzip", "git"};
     for (const string &dep : dependencies) {
         if (exec(("command -v " + dep).c_str()) == "") {
             cout << dep +
